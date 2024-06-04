@@ -1,34 +1,35 @@
-import org.postgresql.shaded.com.ongres.scram.common.bouncycastle.pbkdf2.DataLengthException;
-
-import javax.naming.SizeLimitExceededException;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
-public class Students {
+public class Users {
 
 
-    private static final String CREATE_TABLE="CREATE TABLE students(id serial primary key,name varchar(20)," +
+    private static final String CREATE_TABLE="CREATE TABLE users(id serial primary key,name varchar(20)," +
             "email varchar(20),phoneNumber integer)";
-    private static final String INSERT_INTO="INSERT INTO students(name,email,phoneNumber) values(?,?,?)";
-    public static final String SELECT="Select * from students";
+    private static final String INSERT_INTO="INSERT INTO users(name,email,phoneNumber) values(?,?,?)";
+    public static final String SELECT="Select * from users";
 
 
     public static void main(String[] args) {
 
-        //Create
+//       Create();
+       Insert();
+       Delete(1);
+       selectUsers();
+       Update(2);
+       SelectById(3);
+    }
+    private static void Create() {
+        try(final Connection conn= DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres",
+                "postgres","mysecretpassword")){
+            PreparedStatement prepare=conn.prepareStatement(CREATE_TABLE);
+            prepare.execute();
 
-//        try(final Connection conn= DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres",
-//                "postgres","mysecretpassword")){
-//            PreparedStatement prepare=conn.prepareStatement(CREATE_TABLE);
-//            prepare.execute();
-//
-//        }catch (SQLException e){
-//            throw new RuntimeException(e);
-//        }
-        //Insert
+        }catch (SQLException e){
+            throw new RuntimeException(e);
+        }
+    }
 
+    private static void Insert() {
         try(final Connection conn= DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres",
                 "postgres","mysecretpassword")){
             PreparedStatement prepare=conn.prepareStatement(INSERT_INTO);
@@ -39,13 +40,9 @@ public class Students {
         }catch (SQLException e){
             throw new RuntimeException(e);
         }
-        //   Deletee
-        Delete(1);
-        //select all
-        selectStudents();
     }
 
-    private static void selectStudents() {
+    private static void selectUsers() {
         try (final Connection conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres",
                 "postgres",
                 "mysecretpassword")) {
@@ -68,7 +65,7 @@ public class Students {
     private static void Delete(int num){
         try(final Connection conn= DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres",
                 "postgres","mysecretpassword")){
-            final String DELETE="DELETE FROM students WHERE id="+num;
+            final String DELETE="DELETE FROM users WHERE id="+num;
         PreparedStatement prepare=conn.prepareStatement(DELETE);
          prepare.executeUpdate();
         }catch (SQLException e){
@@ -78,9 +75,19 @@ public class Students {
     private static void Update(int num){
         try(final Connection conn= DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres",
                 "postgres","mysecretpassword")){
-            final String DELETE="DELETE FROM students WHERE id="+num;
-            PreparedStatement prepare=conn.prepareStatement(DELETE);
+            final String UPDATE="UPDATE users SET name='Jeyhuna' WHERE id="+num;
+            PreparedStatement prepare=conn.prepareStatement(UPDATE);
             prepare.executeUpdate();
+        }catch (SQLException e){
+            throw new RuntimeException(e);
+        }
+    }
+    private static void SelectById(int id){
+        try(final Connection conn= DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres",
+                "postgres","mysecretpassword")){
+            final String select="Select * from users where id="+id;
+            PreparedStatement prepare=conn.prepareStatement(select);
+            prepare.executeQuery();
         }catch (SQLException e){
             throw new RuntimeException(e);
         }
