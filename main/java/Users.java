@@ -11,8 +11,7 @@ public class Students {
 
     private static final String CREATE_TABLE="CREATE TABLE students(id serial primary key,name varchar(20)," +
             "email varchar(20),phoneNumber integer)";
-    private static final String INSERT_INTO="INSERT INTO students(name,email,phoneNumber) values('Gunel'," +
-            "'gunel@gmail.com',32323232)";
+    private static final String INSERT_INTO="INSERT INTO students(name,email,phoneNumber) values(?,?,?)";
     public static final String SELECT="Select * from students";
 
 
@@ -30,13 +29,16 @@ public class Students {
 //        }
         //Insert
 
-//        try(final Connection conn= DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres",
-//                "postgres","mysecretpassword")){
-//            PreparedStatement prepare=conn.prepareStatement(INSERT_INTO);
-//            prepare.execute();
-//        }catch (SQLException e){
-//            throw new RuntimeException(e);
-//        }
+        try(final Connection conn= DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres",
+                "postgres","mysecretpassword")){
+            PreparedStatement prepare=conn.prepareStatement(INSERT_INTO);
+            prepare.setString(1,"Gunel");
+            prepare.setString(2,"test@gmail.com");
+            prepare.setInt(3,343434324);
+            prepare.execute();
+        }catch (SQLException e){
+            throw new RuntimeException(e);
+        }
         //   Deletee
         Delete(1);
         //select all
@@ -69,6 +71,16 @@ public class Students {
             final String DELETE="DELETE FROM students WHERE id="+num;
         PreparedStatement prepare=conn.prepareStatement(DELETE);
          prepare.executeUpdate();
+        }catch (SQLException e){
+            throw new RuntimeException(e);
+        }
+    }
+    private static void Update(int num){
+        try(final Connection conn= DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres",
+                "postgres","mysecretpassword")){
+            final String DELETE="DELETE FROM students WHERE id="+num;
+            PreparedStatement prepare=conn.prepareStatement(DELETE);
+            prepare.executeUpdate();
         }catch (SQLException e){
             throw new RuntimeException(e);
         }
